@@ -1,0 +1,79 @@
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+
+* {
+  font-family: "Ubuntu Mono", monospace !important;
+}
+
+body {
+  background: url(assets/home.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  color: white;
+  font-weight: 100;
+}
+
+.homepage h1 {
+  font-size: 85px;
+}
+.black-cover-06 {
+  background-color: rgba(0, 0, 0, 0.6); /* Black background with 40% opacity */
+}
+
+.black-cover-04 {
+  background-color: rgba(0, 0, 0, 0.4); /* Black background with 40% opacity */
+}
+
+.content-cover {
+  margin-top: 150px !important;
+  padding-top: 30px !important;
+  padding-bottom: 50px !important;
+}
+
+.btn-play-high {
+  font-size: 20px;
+  font-weight: 100 !important;
+  padding: 15px 10px 15px 10px !important;
+  border-radius: 30px !important;
+  box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px,
+    rgba(255, 255, 255, 0.8) -6px -2px 16px 0px !important;
+  transition: 0.5s;
+}
+
+.btn-play-low {
+  font-size: 13px;
+  font-weight: 100 !important;
+  padding: 15px 10px 15px 10px !important;
+  border-radius: 30px !important;
+  transition: 0.5s;
+}
+/* 
+.btn-play-low i {
+  float: left;
+  padding-top: 3px;
+  padding-left: 15px;
+} */
+.btn-play-low:hover,
+.btn-play-high:hover {
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.custom-form {
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+
+.modal-header,
+.modal-body,
+.modal-footer {
+  border-style: none !important;
+}

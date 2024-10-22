@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Homepage</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <main class="black-cover-04 homepage">
+        <section class="container w-100">
+            <div class="content-cover">
+                <h1 class="text-center mt-3 mb-3">NEGARA KONOHA</h1>
+                <div class="row justify-content-center">
+                    <div class="col-sm-3 text-center pt-3">
+                        <button type="button" class="btn btn-light w-100 btn-play-high" data-bs-toggle="modal"
+                            data-bs-target="#startGameModal">
+                            <i class="ph ph-play"></i> Start The Game
+                        </button>
+
+                        <div class="row mt-4">
+                            <div class="col-6 mb-3">
+                                <button type="button" class="btn btn-light w-100 btn-play-low" data-bs-toggle="modal"
+                                    data-bs-target="#joinRoomModal">
+                                    <i class="ph ph-users-three"></i> Join Room
+                                </button>
+                            </div>
+
+                            <div class="col-6 mb-3">
+                                <button type="button" class="btn btn-light w-100 btn-play-low" data-bs-toggle="modal"
+                                    data-bs-target="#findGlobal">
+                                    <i class="ph ph-globe-hemisphere-west"></i> Global Party
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Start Game Modal -->
+            <div class="modal fade" id="startGameModal" tabindex="-1" aria-labelledby="startGameModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="text-dark">Masukkan Username Kamu</h3>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                <label class="text-secondary">Username</label>
+                                <input type="text" name="username" class="form-control custom-form mb-3 mt-2"
+                                    id="create-room-username">
+                            </div>
+
+                            <div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="global"
+                                        name="global">
+                                    <label class="text-secondary">Global Room</label>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="modal-footer pt-0">
+                            <button type="button" class="btn btn-light w-50 mx-auto btn-play-low bg-light shadow-sm"
+                                onclick="createRoom()">
+                                <i class="ph ph-play"></i> Buat Room
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Join Room Modal -->
+            <div class="modal fade" id="joinRoomModal" tabindex="-1" aria-labelledby="joinRoomModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="text-dark">
+                                <i class="ph ph-users-three"></i> Join Room
+                            </h3>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                <label class="text-secondary">Username</label>
+                                <input type="text" name="username" class="form-control custom-form mb-3 mt-2"
+                                    id="username-input">
+                            </div>
+                            <div>
+                                <label class="text-secondary">Room Code</label>
+                                <input type="text" name="room_code" class="form-control custom-form mb-3 mt-2"
+                                    id="roomcode-input">
+                            </div>
+                        </div>
+                        <div class="modal-footer pt-0">
+                            <button type="button" class="btn btn-light w-50 mx-auto btn-play-low bg-light shadow-sm"
+                                onclick="joinRoom()">
+                                <i class="ph ph-users-three"></i> Join Room
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        async function createRoom() {
+            const username = document.getElementById('create-room-username').value;
+            const global = document.getElementById('global').checked;
+
+            if (username) {
+                try {
+                    const response = await fetch('/create_room', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ username, global }),
+                    });
+
+                    const result = await response.json();
+                    console.log(result);
+                    if (response.ok) {
+                        window.location.href = `/waitingroom.html?username=${username}&roomCode=${result.roomCode}`;
+                    } else {
+                        alert(result.error || 'Failed to create room');
+                    }
+                } catch (error) {
+                    console.error('Error creating room:', error);
+                    alert('Error creating room, please try again later.');
+                }
+            }
+        }
+
+        async function joinRoom() {
+            const roomCode = document.getElementById('roomcode-input').value;
+            const username = document.getElementById('username-input').value || "Anonymous";
+            if (roomCode) {
+                window.location.href = `/waitingroom.html?username=${username}&roomCode=${roomCode}`;
+            }
+        }
+
+        // Function to generate a random room code (example)
+        function generateRoomCode() {
+            return Math.floor(1000 + Math.random() * 9000).toString();
+        }
+    </script>
+</body>
+
+</html>

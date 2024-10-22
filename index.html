@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container homepage">
+        <div class="card-homepage bg-card">
+            <h2>NEGARA KONOHA</h2>
+            <div class="btn-start">
+                <button onclick="" class="btn-open"><i class="ph ph-play"></i> Start The Game</button>
+                <a href="" class="btn-addCode">Have a code? Enter here</a>
+            </div>
+        </div>
+
+        <div class="overlay hidden"></div>
+        <!-- Modal Input Username -->
+        <section class="modal hidden">
+            <div class="header-modal">
+              <h2>Masukkan Username Kamu</h2>
+              <button class="btn-close">⨉</button>
+            </div>
+            <div class="body-modal">
+                <input type="text" id="" placeholder="John Doe" />
+                <button class="btn-submit"><i class="ph ph-play"></i> Submit</button>
+            </div>          
+        </section>
+
+        <!-- Modal Enter Code -->
+        <section class="modalAddCode hidden">
+            <div class="header-modal">
+              <h2 class="title-addCode">Masukkan Kode & <span>Bermain Bersama Teman Muu</span></h2>
+              <button class="btn-closeAddCode">⨉</button>
+            </div>
+            <div class="body-modal">
+                <input type="text" id="" placeholder="1234" />
+                <button class="btn-submit"><i class="ph ph-play"></i> Submit</button>
+            </div>          
+        </section>
+
+    </div>
+
+
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="./modal.js"></script>
+</body>
+</html>

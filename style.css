@@ -1,0 +1,615 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Ubuntu Mono", monospace;
+}
+
+.container {
+    min-width: 100vw;
+    min-height: 100vh;
+}
+
+.bg-card {
+    background-color: rgba(0, 0, 0, 0.6); /* Black background with 40% opacity */
+}
+
+.bg-card-4 {
+    background-color: rgba(0, 0, 0, 0.4); /* Black background with 40% opacity */
+}
+
+.homepage, .waiting_room {
+    display: flex;
+    background: url(assets/home.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: 95%;
+    justify-content: center;
+    align-items: center;
+}
+
+/* HOMPAGE STYLE */
+
+.card-homepage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2.5rem 0;
+    width: 100%;
+    height: 20rem;
+    justify-content: space-around;
+}
+
+.card-homepage h2 {
+    font-size: 4rem;
+}
+
+.btn-start {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: space-around;
+}
+
+.btn-start button {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    opacity: 100%;
+    cursor: pointer;
+    border: none;
+    background-color: white;
+    border-radius: 25px;
+    padding: 25px 40px;
+    margin: 25px 0;
+}
+
+.btn-start button i {
+    margin-right: 10px;
+    font-size: 25px;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    color: white;
+    font-weight: 100;
+}
+
+a{
+    font-size: 14px;
+    color: white;
+    text-decoration: none;
+}
+
+.modal, .modalAddCode {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.4rem;
+    width: 550px;
+    z-index: 2;
+    padding: 1.3rem;
+    min-height: 250px;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+}
+
+.header-modal {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.header-modal h2 {
+    color: black
+}
+
+.header-modal button {
+    border: none;
+    background: transparent;
+    font-size: 25px;
+}
+
+.body-modal {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 200px;
+    align-items: center;
+    justify-content: center;
+}
+
+.body-modal input {
+    padding: 20px 15px;
+    border-radius: 20px;
+    font-size: 20px;
+    border: 1px solid black;
+    width: 80%;
+    margin-bottom: 25px;
+}
+
+.btn-submit {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    cursor: pointer;
+    border: none;
+    background-color: #EBEEF3;
+    border-radius: 15px;
+    padding: 15px 25px;
+}
+
+.btn-submit i {
+    margin-right: 10px;
+}
+
+.btn-close {
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    z-index: 1;
+}
+
+.title-addCode {
+    display: flex;
+    flex-direction: column;
+}
+
+/* WATING ROOM STYLE */
+
+.card-waiting {
+    padding: 20px 50px;
+    width: 100%;
+    height: 100vh;
+}
+
+.content-waiting {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    padding: 5%;
+}
+
+.content-waiting h2 {
+    font-size: 2.5rem;
+}
+
+.list-player {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 20px;
+}
+
+#players-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 cards per row */
+    gap: 10px; /* Add space between cards */
+    width: 100%;
+    height: auto;
+    margin-top: 20px;
+}
+
+.label-name {
+    font-size: 26px;
+    padding: 25px 20px;
+    margin: 10px;
+    border-radius: 20px;
+    background-color: white;
+    text-align: center;
+}
+
+.action-section {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.roomcode {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.roomcode h4 {
+    font-size: 1.5rem;
+}
+
+.roomcode h2 {
+    font-size: 4rem;
+}
+
+.roomcode h2 i  {
+    cursor: pointer;
+}
+
+.start-game {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.start-game button {
+    display: flex;
+    align-items: center;
+    font-size: 22px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    background-color: white;
+    border-radius: 25px;
+    padding: 25px 40px;
+    margin: 25px 0;
+}
+
+.start-game button i {
+    margin-right: 10px;
+    font-size: 30px;
+}
+
+.random-mode {
+    display: flex;
+    flex-direction: column;
+    align-items:end;
+    justify-content: center;
+    width: 100%;
+    font-size: 2.5rem;
+}
+
+.random-mode-label {
+    margin-left: 10px;
+    font-size: 1.8rem;
+    color: white;
+    margin-bottom: 20px;
+    font-weight: 400;
+}
+
+.random-mode-label i {
+    margin-left: 5px;
+    font-size: 1.4rem;
+    cursor: pointer;
+}
+
+/* Toggle Switch CSS */
+.switch {
+    position: relative;
+    display: inline-block;
+    align-items: center;
+    width: 70px;
+    height: 38px;
+}
+
+.button-switch {
+    display: flex;
+    width: 40%;
+    justify-content: center;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 30px;
+    width: 30px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #4CAF50; 
+}
+
+input:checked + .slider:before {
+    transform: translateX(30px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.annoucment, .won {
+    background-color: #1F2632;
+}
+
+/* ANNOUCMENT */
+
+/* ROLE */
+
+.card-annoucment {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.card-annoucment img {
+    width: 100px;
+    border-radius: 50%;
+}
+
+.informasi-user {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin-top: 25px;
+}
+
+.informasi-user h4 {
+    font-size: 1.4rem;
+    font-weight: 100;
+}
+
+.informasi-user h2 {
+    font-size: 4rem;
+    letter-spacing: 3px;
+}
+
+
+/* ELIMINATE */
+
+.card-eliminate {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+}
+
+.user-eliminate img {
+    width: 80px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.user-eliminate {
+    display: flex;
+    justify-content: center;
+    background-color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    align-items: center;
+}
+
+.informasi-user-eliminate {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.informasi-user-eliminate {
+    display: flex;
+    flex-direction: column;
+    text-align: start;
+    margin-left: 30px;
+}
+
+.informasi-user-eliminate h4 {
+    font-size: 1rem;
+    color: #5D7B9A;
+    margin-top: 8px;
+    font-weight: 100;
+}
+
+.informasi-user-eliminate h2 {
+    font-size: 2rem;
+    color: black;
+    letter-spacing: 3px;
+}
+
+/* Eliminated text styling */
+#eliminated-text {
+    font-size: 4rem;
+    color: #FC5C65;
+    margin-top: 20px;
+    font-weight: 500;
+    transition: opacity 2s ease, visibility 2s ease; /* Smooth fade-in */
+}
+
+#user-card {
+    transition: opacity 2s ease, visibility 2s ease; /* Smooth fade-in */
+}
+
+/* Hidden state */
+.fade-hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Visible state */
+.fade-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.card-hidden {
+    opacity: .4;
+}
+
+/* WON PAGE */
+
+/* MAFIA WON */
+
+.card-mafia-won {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+}
+
+.mafia-won img {
+    width: 80px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.mafia-won {
+    display: flex;
+    justify-content: center;
+    background-color: white;
+    margin: 0 20px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    align-items: center;
+}
+
+.informasi-mafia-won {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.informasi-mafia-won {
+    display: flex;
+    flex-direction: column;
+    text-align: start;
+    margin-left: 30px;
+}
+
+.informasi-mafia-won h4 {
+    font-size: 1rem;
+    color: #5D7B9A;
+    margin-top: 8px;
+    font-weight: 100;
+}
+
+.informasi-mafia-won h2 {
+    font-size: 2rem;
+    color: #FC5C65;
+    letter-spacing: 3px;
+}
+
+.list-mafia {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+/* Eliminated text styling */
+#mafia-won-text{
+    font-size: 4rem;
+    color: #FC5C65;
+    margin-bottom: 20px;
+    font-weight: 500;
+    transition: opacity 2s ease, visibility 2s ease; /* Smooth fade-in */
+}
+
+#user-card {
+    transition: opacity 2s ease, visibility 2s ease; /* Smooth fade-in */
+}
+
+/* AKTIVIS WON */
+.card-aktivis-won {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+}
+
+.aktivis-won img {
+    width: 80px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.aktivis-won {
+    display: flex;
+    justify-content: space-around;
+    background-color: white;
+    margin: 10px 20px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    align-items: center;
+    width: 500px; /* Adjust card width */
+}
+
+.informasi-aktivis-won {
+    display: flex;
+    flex-direction: column;
+    text-align: start;
+}
+
+.informasi-aktivis-won h4 {
+    font-size: 1rem;
+    color: #5D7B9A;
+    margin-top: 8px;
+    font-weight: 100;
+}
+
+.informasi-aktivis-won h2 {
+    font-size: 2rem;
+    color: black;
+    letter-spacing: 3px;
+}
+
+.list-aktivis {
+    display: flex;
+    flex-wrap: wrap; /* Allow the items to wrap */
+    width: 100%;
+    justify-content: center;
+    gap: 10px; /* Add space between the cards */
+}
+
+#aktivis-won-text {
+    font-size: 4rem;
+    color: #26DE81;
+    margin-bottom: 20px;
+    font-weight: 500;
+    transition: opacity 2s ease, visibility 2s ease; /* Smooth fade-in */
+}
+
+#user-card {
+    transition: opacity 2s ease, visibility 2s ease; /* Smooth fade-in */
+}

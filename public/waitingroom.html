@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waiting Room</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container waiting_room">
+        <div class="card-waiting bg-card-4">
+            <div class="content-waiting">
+                <div class="list-player">
+                    <h2>Players : </h2>
+                    <div id="players-list"></div>
+                </div>
+                <div class="action-section">
+                    <div class="roomcode">
+                        <h4>Room Code : </h4>
+                        <h2 id="room-code-display">Loading...</h2>
+                    </div>
+                    <div class="start-game">
+                        <button onclick="startGame()" class="btn-open"><i class="ph ph-play"></i> Start The
+                            Game</button>
+                    </div>
+                    <div class="random-mode">
+                        <span class="random-mode-label">Random Mode <i class="ph ph-info"></i></span>
+                        <div class="button-switch">
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        // Get username and room code from URL query parameters or localStorage
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('username') || localStorage.getItem('username') || "Anonymous";
+        const roomCode = urlParams.get('roomCode') || localStorage.getItem('roomCode') || "0000";
+
+        // Save to localStorage
+        localStorage.setItem('username', username);
+        localStorage.setItem('roomCode', roomCode);
+
+        // Remove URL parameters
+        const newUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+
+        // Display room code
+        document.getElementById('room-code-display').textContent = roomCode;
+
+        // Join the room
+        socket.emit('joinRoom', { username, roomCode });
+
+        // Listen for player list updates
+        socket.on('playersListUpdate', (players) => {
+            const playersList = document.getElementById('players-list');
+            playersList.innerHTML = '';  // Clear the current list
+            players.forEach(player => {
+                const playerDiv = document.createElement('div');
+                playerDiv.classList.add('label-name');
+                playerDiv.textContent = player;
+                playersList.appendChild(playerDiv);
+            });
+        });
+
+        function startGame() {
+            // Placeholder function for starting the game
+            alert('Starting the game!');
+        }
+    </script>
+</body>
+
+</html>

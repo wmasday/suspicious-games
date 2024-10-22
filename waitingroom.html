@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waiting Room</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container waiting_room">
+        <div class="card-waiting bg-card-4">
+            <div class="content-waiting">
+                <div class="list-player">
+                    <h2>Players : </h2>
+                    <div id="players-list">
+                    </div>
+                </div>
+                <div class="action-section">
+                    <div class="roomcode">
+                        <h4>Room Code : </h4>
+                        <h2>6434 <i class="ph ph-copy"></i></h2>
+                    </div>
+                    <div class="start-game">
+                        <button onclick="" class="btn-open"><i class="ph ph-play"></i> Start The Game</button>
+
+                    </div>
+                    <div class="random-mode">
+                        <span class="random-mode-label">Random Mode <i class="ph ph-info"></i></span>
+                        <div class="button-switch">
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script type="text/javascript">
+        const players = [
+            'belligerent_mantis_17 (You)',
+            'jeune_ninja_76',
+            'voracious_mantis_69',
+            'voracious_cupcake_21',
+            'jeune_engineer_96',
+            'voluble_woodworkers_16',
+            'lachrymose_moldmaker_91',
+            'garrulous_panel_40',
+            'incendiary_animator_92',
+            'risible_shop_98',
+            'risible_shop_98',
+            'risible_shop_98',
+            'risible_shop_98',
+            'risible_shop_98',
+            'risible_shop_98',
+        ];
+
+        const playersList = document.getElementById('players-list');
+
+        players.forEach(player => {
+            const playerDiv = document.createElement('div');
+            playerDiv.classList.add('label-name');
+            playerDiv.textContent = player;
+            playersList.appendChild(playerDiv);
+        });
+    </script>
+</body>
+
+</html>
