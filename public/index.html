@@ -129,9 +129,9 @@
                     });
 
                     const result = await response.json();
-                    console.log(result);
-                    if (response.ok) {
-                        window.location.href = `/waitingroom.html?username=${username}&roomCode=${result.roomCode}`;
+                    const roomCode = result.roomCode;
+                    if (response.ok && roomCode) {
+                        window.location.href = `/waitingroom.html?username=${username}&roomCode=${roomCode}`;
                     } else {
                         alert(result.error || 'Failed to create room');
                     }

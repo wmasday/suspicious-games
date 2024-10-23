@@ -10,6 +10,13 @@ body {
   background-repeat: no-repeat;
 }
 
+.waitingroom {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url(assets/home.png) !important;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
 h1,
 h2,
 h3,
