@@ -202,6 +202,10 @@ a{
     padding: 20px;
 }
 
+.list-player h3 {
+    margin-top: 10px;
+}
+
 #players-list {
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* 3 cards per row */
@@ -612,4 +616,228 @@ input:checked + .slider:before {
 
 #user-card {
     transition: opacity 2s ease, visibility 2s ease; /* Smooth fade-in */
+}
+
+/* STYLE SIDANG PAGE ( SIANG ) */
+.header-player {
+    display: flex;
+    justify-content: space-between;
+    background-color: rgba(255, 255, 255, 0.3); /* Transparent white */
+    backdrop-filter: blur(3px); /* Apply blur effect */
+    -webkit-backdrop-filter: blur(3px); /* Support for Safari */
+    padding: 20px;
+    border-radius: 15px; /* Slightly rounded corners */
+    width: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+}
+
+.content-sidang {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    padding: 5%;
+}
+
+.card-sidang {
+    padding: 20px 50px;
+    width: 100%;
+    height: 100vh;
+}
+
+.sidang_room {
+    display: flex;
+    background: url(public/assets/Sidang.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: 95%;
+    justify-content: center;
+    align-items: center;
+}
+
+.timer h4, .role h4 {
+    text-align: center;
+}
+
+.timer h4, .role h4, .cuaca h4 {
+    font-size: 20px;
+    color: #ffffff; /* White text for readability */
+}
+
+.cuaca {
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+}
+
+.role, .timer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 20%;
+}
+
+span {
+    color: #fff; /* White text */
+    font-size: 2.5rem;
+}
+
+.cuaca span, .timer span, .role span {
+    margin-top: 5px;
+}
+
+.action-player {
+    display: flex;
+    justify-content: space-between;   
+    width: 100%;
+}
+
+.btn-vote, .field-talk {
+    display: flex;
+    align-items: center;
+}
+
+.field-talk input {
+    width: 400px;
+    border-radius: 20px;
+    padding: 15px 20px;
+}
+
+.btn-vote button {
+    display: flex;
+    border: none;
+    border-radius: 20px;
+    padding: 15px 20px;
+    font-size: 20px;
+    align-items: center;
+}
+
+.btn-vote button i {
+    font-size: 30px;
+    margin-left: 10px;
+}
+
+.players {
+    display: flex;
+    align-items: center;
+    background-color: #f0f4f7; /* Light gray for card background */
+    padding: 10px 8px 10px 20px;
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    width: 90%;
+    gap: 25px;
+    margin: 10px 0;
+    transition: transform 0.2s ease-in-out; /* Slight animation */
+}
+
+
+.players:hover {
+    transform: translateY(-5px); /* Elevate card slightly on hover */
+}
+
+/* Profile Image */
+.players img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; /* Circular image */
+    object-fit: cover; /* Ensure image fits nicely */
+}
+
+/* Player Info */
+.player-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.player-info h4 {
+    margin: 0;
+    font-weight: 400;
+    font-size: 22px;
+    color: black; /* Darker text color */
+}
+
+.player-info p {
+    margin: 2px 0 0;
+    font-size: 14px;
+    color: #7f8c8d; /* Lighter gray for the username */
+}
+
+/* MAFIA NIGHT */
+
+#mafia-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 cards per row */
+    gap: 10px; /* Add space between cards */
+    width: 100%;
+    height: auto;
+    margin-top: 20px;
+}
+
+.mafias {
+    display: flex;
+    align-items: center;
+    background-color: #f0f4f7; /* Light gray for card background */
+    padding: 10px 8px 10px 20px;
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    width: 90%;
+    gap: 25px;
+    margin: 10px 0;
+    transition: transform 0.2s ease-in-out; /* Slight animation */
+}
+
+
+.mafias:hover {
+    transform: translateY(-5px); /* Elevate card slightly on hover */
+}
+
+/* Profile Image */
+.mafias img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; /* Circular image */
+    object-fit: cover; /* Ensure image fits nicely */
+}
+
+/* mafia Info */
+.mafia-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.mafia-info h4 {
+    margin: 0;
+    font-weight: 400;
+    font-size: 22px;
+    color: #FC5C65; /* Darker text color */
+}
+
+.mafia-info p {
+    margin: 2px 0 0;
+    font-size: 14px;
+    color: #7f8c8d; /* Lighter gray for the username */
+}
+
+.content-mafia {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    padding: 5%;
+}
+
+.card-mafia {
+    padding: 20px 50px;
+    width: 100%;
+    height: 100vh;
+}
+
+.mafia_room {
+    display: flex;
+    background: url(public/assets/mafia_night.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: 95%;
+    justify-content: center;
+    align-items: center;
 }

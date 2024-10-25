@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waiting Room</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container sidang_room">
+        <div class="card-sidang bg-card-4">
+            <div class="content-sidang">
+                <div class="header-player">
+                    <div class="cuaca">
+                        <h4>Fase : </h4>
+                        <span><i class="ph ph-sun"></i> Siang</span>
+                    </div>
+                    <div class="role">
+                        <h4>Role Kamu</h4>
+                        <span>Aktivis</span>
+                    </div>
+                    <div class="timer">
+                        <h4>Timer</h4>
+                        <span>60 s</span>
+                    </div>
+                </div>
+                <div class="list-player">
+                    <h3>Players : </h3>
+                    <div id="players-list"></div>
+                </div>
+                <div class="action-player">
+                    <div class="field-talk">
+                        <input type="text" placeholder="Let's Talk">
+                    </div>
+                    <div class="btn-vote">
+                        <button>Vote <i class="ph ph-target"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script type="text/javascript">
+        const players = [
+            {
+                img: './public/assets/Profile.png',
+                name: "Budi",
+                username: 'belligerent_mantis_17 (You)',
+            },
+            {
+                img: './public/assets/Profile.png',
+                name: "Asep",
+                username: 'belligerent_mantis_17',
+            },
+            {
+                img: './public/assets/Profile.png',
+                name: "Udin",
+                username: 'belligerent_mantis_17',
+            },
+            {
+                img: './public/assets/Profile.png',
+                name: "Jamal",
+                username: 'belligerent_mantis_17',
+            },
+            {
+                img: './public/assets/Profile.png',
+                name: "Nulur",
+                username: 'belligerent_mantis_17',
+            },
+            {
+                img: './public/assets/Profile.png',
+                name: "Rina",
+                username: 'belligerent_mantis_17',
+            },
+            {
+                img: './public/assets/Profile.png',
+                name: "Nabila",
+                username: 'belligerent_mantis_17',
+            },
+            {
+                img: './public/assets/Profile.png',
+                name: "Hendra",
+                username: 'belligerent_mantis_17',
+            },
+            {
+                img: './public/assets/Profile.png',
+                name: "Joko",
+                username: 'belligerent_mantis_17',
+            },
+        ];
+
+        const mafias = [
+            
+        ]
+
+        const playersList = document.getElementById('players-list');
+
+        players.forEach(player => {
+            const playerDiv = document.createElement('div');
+            playerDiv.classList.add('players');
+            
+            const playerImage = document.createElement('img');
+            playerImage.src = player.img; // Use player image
+            
+            const playerInfo = document.createElement('div');
+            playerInfo.classList.add('player-info');
+
+            const playerName = document.createElement('h4');
+            playerName.textContent = player.name + (player.username.includes('(You)') ? ' (You)' : '');
+
+            const playerUsername = document.createElement('p');
+            playerUsername.textContent = player.username;
+
+            playerInfo.appendChild(playerName);
+            playerInfo.appendChild(playerUsername);
+
+            playerDiv.appendChild(playerImage);
+            playerDiv.appendChild(playerInfo);
+            playersList.appendChild(playerDiv);
+        })
+    </script>
+</body>
+
+</html>
