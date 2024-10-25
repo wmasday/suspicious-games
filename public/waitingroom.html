@@ -52,6 +52,12 @@
 
                 <div class="col-sm-3 pt-3 offset-sm-2">
                     <span class="text-white">Global Room</span>
+                    <div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="global" name="global">
+                            <label class="text-secondary" for="global">Global Room</label>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -63,14 +69,16 @@
     <script type="text/javascript">
         const socket = io();
 
-        // Get username and room code from URL query parameters or localStorage
+        // Get username, room code, and global room status from URL query parameters or localStorage
         const urlParams = new URLSearchParams(window.location.search);
         const username = urlParams.get('username') || localStorage.getItem('username') || "Anonymous";
         const roomCode = urlParams.get('roomCode') || localStorage.getItem('roomCode') || "0000";
+        let isGlobalRoom = urlParams.get('global') === 'true' || localStorage.getItem('isGlobalRoom') === 'true';
 
         // Save to localStorage
         localStorage.setItem('username', username);
         localStorage.setItem('roomCode', roomCode);
+        localStorage.setItem('isGlobalRoom', isGlobalRoom);
 
         // Remove URL parameters
         const newUrl = window.location.origin + window.location.pathname;
@@ -78,6 +86,17 @@
 
         // Display room code
         document.getElementById('room-code-display').textContent = roomCode;
+
+        // Set the global room checkbox status
+        const globalCheckbox = document.getElementById('global');
+        globalCheckbox.checked = isGlobalRoom;
+
+        // Listen for changes in the Global Room checkbox
+        globalCheckbox.addEventListener('change', () => {
+            isGlobalRoom = globalCheckbox.checked;
+            localStorage.setItem('isGlobalRoom', isGlobalRoom);
+            socket.emit('toggleGlobalRoom', { roomCode, isGlobalRoom });
+        });
 
         // Hide the "Start The Game" button initially
         const startGameButton = document.getElementById('startGameNow');
