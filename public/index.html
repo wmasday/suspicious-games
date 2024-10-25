@@ -111,6 +111,7 @@
         </section>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script>
@@ -145,14 +146,52 @@
         async function joinRoom() {
             const roomCode = document.getElementById('roomcode-input').value;
             const username = document.getElementById('username-input').value || "Anonymous";
-            if (roomCode) {
-                window.location.href = `/waitingroom.html?username=${username}&roomCode=${roomCode}`;
-            }
-        }
 
-        // Function to generate a random room code (example)
-        function generateRoomCode() {
-            return Math.floor(1000 + Math.random() * 9000).toString();
+            if (roomCode && username) {
+                try {
+                    const response = await fetch('/join_room', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ roomCode, username }),
+                    });
+
+                    const result = await response.json();
+                    if (response.ok) {
+                        // Redirect to the waiting room if join was successful
+                        window.location.href = `/waitingroom.html?username=${username}&roomCode=${roomCode}`;
+                    } else {
+                        // Show an error message if join was unsuccessful
+                        if (result.error) {
+                            Swal.fire({
+                                title: "Wopsss!",
+                                text: result.error,
+                                icon: "danger"
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Wopsss!",
+                                text: 'Failed to join room',
+                                icon: "danger"
+                            });
+                        }
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        title: "Wopsss!",
+                        text: 'Error join room.',
+                        icon: "warning"
+                    });
+                }
+            } else {
+                Swal.fire({
+                    title: "Wopsss!",
+                    text: 'Failed to join room',
+                    icon: "warning"
+                });
+
+            }
         }
     </script>
 </body>

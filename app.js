@@ -1,55 +1,3 @@
-// const express = require('express');
-// const http = require('http');
-// const { Server } = require('socket.io');
-
-// const app = express();
-// const server = http.createServer(app);
-// const io = new Server(server);
-
-// app.use(express.static('public'));  // Serve static files like HTML, CSS, and client-side JS
-
-// io.on('connection', (socket) => {
-//     console.log('A player connected:', socket.id);
-
-//     // Join a room
-//     socket.on('joinRoom', ({ username, roomCode }) => {
-//         socket.join(roomCode);
-//         console.log(`${username} joined room: ${roomCode}`);
-
-//         // Add player's name to socket
-//         socket.username = username;
-
-//         // Broadcast the list of players in the room to everyone
-//         const playersInRoom = getPlayersInRoom(roomCode);
-//         io.to(roomCode).emit('playersListUpdate', playersInRoom);
-//     });
-
-//     // Handle player disconnect
-//     socket.on('disconnect', () => {
-//         console.log('A player disconnected:', socket.id);
-//         // Remove player and update the room list
-//         const roomCode = [...socket.rooms][1];  // Get the room the player was in (skip the first entry which is the socket ID)
-//         if (roomCode) {
-//             const playersInRoom = getPlayersInRoom(roomCode);
-//             io.to(roomCode).emit('playersListUpdate', playersInRoom);
-//         }
-//     });
-
-//     // Function to get players in a specific room
-//     function getPlayersInRoom(roomCode) {
-//         const clients = io.sockets.adapter.rooms.get(roomCode) || new Set();
-//         const players = Array.from(clients).map(id => io.sockets.sockets.get(id).username);
-//         return players;
-//     }
-// });
-
-// server.listen(3000, () => {
-//     console.log('Server is running on port 3000');
-// });
-
-
-
-// ----- UPDATE 22 OCT
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -61,10 +9,10 @@ const io = new Server(server);
 
 // Create MySQL connection
 const db = mysql.createConnection({
-    host: 'localhost',      // Database host
-    user: 'root',           // Database username
-    password: 'mamank546',   // Database password
-    database: 'suspicious_games' // Database name
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'suspicious_games'
 });
 
 // Connect to the database
@@ -75,7 +23,7 @@ db.connect((err) => {
 
 // Middleware to parse JSON bodies in requests
 app.use(express.json());
-app.use(express.static('public'));  // Serve static files like HTML, CSS, and client-side JS
+app.use(express.static('public'));
 
 // Function to get players in a specific room
 function getPlayersInRoom(roomCode) {
@@ -84,7 +32,8 @@ function getPlayersInRoom(roomCode) {
     return players;
 }
 
-// POST API to create a new room and join it
+
+// Create Room
 app.post('/create_room', (req, res) => {
     const { username, global } = req.body;
 
@@ -114,120 +63,174 @@ app.post('/create_room', (req, res) => {
                 return res.status(500).json({ error: 'Failed to create room' });
             }
 
-            // Room created successfully, now emit event to join the room
-            io.once('connection', (socket) => {
-                socket.join(roomCode);
-                socket.username = username;
+            // Get the newly created room ID
+            const roomId = result.insertId;
 
-                // Send the updated player list in the room
-                const playersInRoom = getPlayersInRoom(roomCode);
-                io.to(roomCode).emit('playersListUpdate', playersInRoom);
+            // Insert the creator into the role_on_room table
+            const insertRoleQuery = `
+                INSERT INTO role_on_room (room_id, username, role, alive, kill_to_user, vote_count, suspected) 
+                VALUES (?, ?, NULL, TRUE, '', 0, FALSE)
+            `;
+            db.query(insertRoleQuery, [roomId, username], (err) => {
+                if (err) {
+                    console.log(err);
+                    return res.status(500).json({ error: 'Failed to add creator to role_on_room' });
+                }
+
+                // Room and role entry created successfully, now emit event to join the room
+                io.once('connection', (socket) => {
+                    socket.join(roomCode);
+                    socket.username = username;
+
+                    // Send the updated player list in the room
+                    const playersInRoom = getPlayersInRoom(roomCode);
+                    io.to(roomCode).emit('playersListUpdate', playersInRoom);
+                });
+
+                res.status(200).json({ message: `${username} created and joined room ${roomCode}`, roomCode });
             });
-
-            res.status(200).json({ message: `${username} created and joined room ${roomCode}`, roomCode });
         });
     });
 });
 
-io.on('connection', (socket) => {
-    console.log('A player connected:', socket.id);
 
-    // Join a room
-    socket.on('joinRoom', ({ username, roomCode }) => {
-        try {
-            socket.join(roomCode);
-            console.log(`${username} joined room: ${roomCode}`);
+// Join Room
+app.post('/join_room', (req, res) => {
+    const { username, roomCode } = req.body;
 
-            // Add player's name to socket
-            socket.username = username;
+    if (!username || !roomCode) {
+        return res.status(400).json({ error: 'Username and Room Code are required' });
+    }
 
-            // Broadcast the list of players in the room to everyone
-            const playersInRoom = getPlayersInRoom(roomCode);
-            io.to(roomCode).emit('playersListUpdate', playersInRoom);
-        } catch (error) {
-            console.error('Error joining room:', error);
+    // Check if room exists and fetch room master
+    const checkRoomQuery = 'SELECT id, room_master FROM room WHERE room_code = ?';
+    db.query(checkRoomQuery, [roomCode], (err, roomResult) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database error' });
         }
-    });
-
-    // Start Game
-    socket.on('startGame', () => {
-        try {
-            const roomCode = [...socket.rooms][1]; // Get the room the player was in
-            const players = getPlayersInRoom(roomCode);
-            const assignedRoles = assignRoles(players);
-
-            // Send the roles to the players
-            players.forEach((player, index) => {
-                const playerSocket = [...io.sockets.sockets].find(([_, s]) => s.username === player)[1];
-                if (playerSocket) {
-                    playerSocket.emit('assignRole', assignedRoles[index]);
-                } else {
-                    console.error(`Player socket not found for: ${player}`);
-                }
-            });
-
-            // Redirect players to the announcement page after a slight delay
-            setTimeout(() => {
-                try {
-                    io.to(roomCode).emit('redirectToAnnouncement');
-                } catch (error) {
-                    console.error('Error starting game:', error);
-                }
-            }, 1000); // Optional: delay to ensure roles are displayed first
-        } catch (error) {
-            console.error('Error starting game:', error);
+        if (roomResult.length === 0) {
+            return res.status(404).json({ error: 'Room not found' });
         }
-    });
 
-    // Handle player disconnect
-    socket.on('disconnect', () => {
-        console.log('A player disconnected:', socket.id);
-        try {
-            const roomCode = [...socket.rooms][1];  // Get the room the player was in
-            if (roomCode) {
-                const playersInRoom = getPlayersInRoom(roomCode);
-                io.to(roomCode).emit('playersListUpdate', playersInRoom);
+        const roomId = roomResult[0].id;
+        const roomMasterName = roomResult[0].room_master;
+
+        // Check if username already exists in the room
+        const checkUserQuery = 'SELECT * FROM role_on_room WHERE room_id = ? AND username = ?';
+        db.query(checkUserQuery, [roomId, username], (err, userResult) => {
+            if (err) {
+                return res.status(500).json({ error: 'Database error' });
             }
-        } catch (error) {
-            console.error('Error during player disconnect:', error);
+            if (userResult.length > 0) {
+                return res.status(409).json({ error: 'Username already taken in this room' });
+            }
+
+            // Insert new player record into `role_on_room`
+            const insertPlayerQuery = `
+                INSERT INTO role_on_room (room_id, username, role, alive, kill_to_user, vote_count, suspected)
+                VALUES (?, ?, NULL, true, '', 0, false)
+            `;
+            db.query(insertPlayerQuery, [roomId, username], (err) => {
+                if (err) {
+                    return res.status(500).json({ error: 'Failed to add user to room' });
+                }
+
+                // Emit event to join the room and update players list
+                io.once('connection', (socket) => {
+                    socket.join(roomCode);
+                    socket.username = username;
+
+                    // Emit room master status based on comparison
+                    const isRoomMaster = (username === roomMasterName);
+                    socket.emit('roomMasterStatus', isRoomMaster);
+
+                    const playersInRoom = getPlayersInRoom(roomCode);
+                    io.to(roomCode).emit('playersListUpdate', playersInRoom);
+                });
+
+                res.status(200).json({ message: `Successfully joined room ${roomCode}`, roomCode });
+            });
+        });
+    });
+});
+
+// Express endpoint to update global room status
+app.post('/api/updateGlobalRoom', (req, res) => {
+    const { roomCode, isGlobalRoom } = req.body;
+
+    const query = `
+        UPDATE room SET public = ? WHERE room_code = ?
+    `;
+    db.query(query, [isGlobalRoom, roomCode], (err) => {
+        if (err) {
+            console.error('Error updating global room status:', err);
+            return res.status(500).send('Server error');
         }
+        res.sendStatus(200); // Respond with success
     });
 });
 
 
-// Function to assign roles based on the number of players
-function assignRoles(players) {
-    const roles = [];
-    const numPlayers = players.length;
+// Socket.IO connection with disconnect handler to remove user
+io.on('connection', (socket) => {
+    console.log('A player connected:', socket.id);
 
-    // Define role distribution based on player count
-    if (numPlayers >= 5 && numPlayers <= 7) {
-        roles.push("Mafia Politik"); // 1
-        roles.push("Jurnalis"); // 1
-        roles.push(...Array(numPlayers - 2).fill("Aktivis")); // Rest are Activists
-    } else if (numPlayers >= 8 && numPlayers <= 10) {
-        roles.push("Mafia Politik"); // 2 max
-        roles.push("Mafia Politik");
-        roles.push("Jurnalis"); // 1
-        roles.push("KPK"); // 1
-        roles.push("Kepolisian"); // 1
-        roles.push(...Array(numPlayers - 5).fill("Aktivis")); // Rest are Activists
-    } else if (numPlayers >= 11 && numPlayers <= 15) {
-        roles.push("Mafia Politik"); // 3 max
-        roles.push("Mafia Politik");
-        roles.push("Mafia Politik");
-        roles.push("Jurnalis"); // 1
-        roles.push("KPK"); // 1
-        roles.push("Kepolisian"); // 1
-        roles.push(...Array(numPlayers - 6).fill("Aktivis")); // Rest are Activists
-    }
+    socket.on('joinRoom', ({ username, roomCode }) => {
+        // Store roomCode and username in the socket instance
+        socket.roomCode = roomCode;
+        socket.username = username;
 
-    // Shuffle the roles array to randomize assignment
-    roles.sort(() => Math.random() - 0.5);
-    console.log(roles)
+        // Join the room
+        socket.join(roomCode);
 
-    return roles;
-}
+        // Query the database to check if the user is the room master
+        const checkRoomMasterQuery = 'SELECT room_master FROM room WHERE room_code = ?';
+        db.query(checkRoomMasterQuery, [roomCode], (err, result) => {
+            if (err) {
+                console.error('Database error:', err);
+                return;
+            }
+
+            if (result.length > 0) {
+                const roomMasterName = result[0].room_master;
+                const isRoomMaster = (username === roomMasterName);
+
+                // Emit room master status to the user
+                socket.emit('roomMasterStatus', isRoomMaster);
+            }
+
+            // Emit updated player list to all clients in the room
+            const playersInRoom = getPlayersInRoom(roomCode);
+            io.to(roomCode).emit('playersListUpdate', playersInRoom);
+        });
+
+    });
+
+    // Handle player disconnect
+    socket.on('disconnect', () => {
+        const roomCode = socket.roomCode;
+        const username = socket.username;
+
+        if (roomCode && username) {
+            // Remove user from role_on_room in the database
+            const removeUserQuery = `
+                DELETE FROM role_on_room
+                WHERE room_id = (SELECT id FROM room WHERE room_code = ?) AND username = ?
+            `;
+            db.query(removeUserQuery, [roomCode, username], (err) => {
+                if (err) {
+                    console.error('Error removing user from role_on_room:', err);
+                    return;
+                }
+
+                // Emit updated player list to all clients in the room
+                const playersInRoom = getPlayersInRoom(roomCode);
+                io.to(roomCode).emit('playersListUpdate', playersInRoom);
+            });
+        }
+    });
+});
+
 
 // Function to generate a random room code (example)
 function generateRoomCode() {

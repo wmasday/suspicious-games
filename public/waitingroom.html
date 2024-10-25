@@ -43,19 +43,18 @@
                     </div>
                 </div>
 
-                <div class="col-sm-3 pt-3 offset-sm-2">
+                <div class="col-sm-3 pt-3 offset-sm-2" id="playerCountSection">
                     <button type="button" class="btn btn-light w-100 btn-play-high" id="startGameNow">
                         <i class="ph ph-play"></i> Start The Game
                     </button>
                     <h3 class="text-white text-center" id="playerCount" style="font-size: 50px;"></h3>
                 </div>
 
-                <div class="col-sm-3 pt-3 offset-sm-2">
+                <div class="col-sm-3 pt-3 offset-sm-2 text-end" id="globalOption">
                     <span class="text-white">Global Room</span>
                     <div>
-                        <div class="form-check form-switch">
+                        <div class="form-check form-switch float-end mt-3">
                             <input class="form-check-input" type="checkbox" role="switch" id="global" name="global">
-                            <label class="text-secondary" for="global">Global Room</label>
                         </div>
                     </div>
                 </div>
@@ -95,13 +94,6 @@
         const globalCheckbox = document.getElementById('global');
         globalCheckbox.checked = isGlobalRoom;
 
-        // Listen for changes in the Global Room checkbox
-        globalCheckbox.addEventListener('change', () => {
-            isGlobalRoom = globalCheckbox.checked;
-            localStorage.setItem('isGlobalRoom', isGlobalRoom);
-            socket.emit('toggleGlobalRoom', { roomCode, isGlobalRoom });
-        });
-
         // Hide the "Start The Game" button initially
         const startGameButton = document.getElementById('startGameNow');
         const playerCountDisplay = document.getElementById('playerCount'); // Get the player count display element
@@ -115,6 +107,7 @@
         }
 
         // Listen for player list updates
+        // Listen for player list updates
         socket.on('playersListUpdate', (players) => {
             try {
                 const playersList = document.getElementById('players-list');
@@ -122,8 +115,10 @@
 
                 players.forEach(player => {
                     const playerDiv = document.createElement('div');
-                    playerDiv.classList.add('col-sm-3', 'custom-card', 'rounded-3', 'bg-white', 'p-3', 'mx-1');
+                    playerDiv.classList.add('col-sm-2', 'custom-card', 'rounded-3', 'bg-white', 'p-3', 'mb-3', 'mx-2');
                     playerDiv.textContent = player === username ? player + ' (You)' : player;
+                    playerDiv.innerHTML = playerDiv.textContent; // Set innerHTML to include badge if applicable
+
                     playersList.appendChild(playerDiv);
                 });
 
@@ -131,15 +126,18 @@
                 playerCountDisplay.textContent = `${players.length} / 9`;
 
                 // Show or hide the "Start The Game" button based on the number of players
-                if (players.length === 2) {
-                    startGameButton.style.display = 'block';
+                if (players.length === 9) {
+                    startGameButton.style.display = 'inline';
+                    playerCountDisplay.style.display = 'none';
                 } else {
                     startGameButton.style.display = 'none';
+                    playerCountDisplay.style.display = 'block';
                 }
             } catch (error) {
                 console.error('Error updating player list:', error);
             }
         });
+
 
         function startGame() {
             try {
@@ -167,6 +165,52 @@
         startGameButton.addEventListener('click', (e) => {
             e.preventDefault();
             startGame();
+        });
+
+        const globalOption = document.getElementById('globalOption');
+        const playerCountSection = document.getElementById('playerCountSection');
+
+        globalOption.style.display = 'none';
+
+        // Receive room master status and show global option if the user is the room master
+        socket.on('roomMasterStatus', (isRoomMaster) => {
+            if (isRoomMaster) {
+                globalOption.style.display = 'block';
+            } else {
+                playerCountSection.classList.remove('col-sm-3');
+                playerCountSection.classList.remove('offset-sm-2');
+                playerCountSection.classList.add('col-sm-10');
+                playerCountSection.classList.add('text-start');
+                playerCountDisplay.classList.remove('text-center');
+                playerCountDisplay.classList.add('text-end');
+                globalOption.style.width = '0px';
+                startGameButton.style.display = 'none';
+            }
+        });
+
+        globalCheckbox.addEventListener('change', async () => {
+            isGlobalRoom = globalCheckbox.checked;
+            localStorage.setItem('isGlobalRoom', isGlobalRoom);
+
+            // Emit the change to the server
+            socket.emit('toggleGlobalRoom', { roomCode, isGlobalRoom });
+
+            // Call the API to update the global room status in the database
+            try {
+                const response = await fetch('/api/updateGlobalRoom', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ roomCode, isGlobalRoom }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to update global room status');
+                }
+            } catch (error) {
+                console.error('Error updating global room status:', error);
+            }
         });
     </script>
 
