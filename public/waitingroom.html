@@ -85,7 +85,11 @@
         window.history.replaceState({}, document.title, newUrl);
 
         // Display room code
-        document.getElementById('room-code-display').textContent = roomCode;
+        try {
+            document.getElementById('room-code-display').textContent = roomCode;
+        } catch (error) {
+            console.error('Error displaying room code:', error);
+        }
 
         // Set the global room checkbox status
         const globalCheckbox = document.getElementById('global');
@@ -104,34 +108,45 @@
         startGameButton.style.display = 'none';
 
         // Join the room
-        socket.emit('joinRoom', { username, roomCode });
+        try {
+            socket.emit('joinRoom', { username, roomCode });
+        } catch (error) {
+            console.error('Error joining room:', error);
+        }
 
         // Listen for player list updates
         socket.on('playersListUpdate', (players) => {
-            const playersList = document.getElementById('players-list');
-            playersList.innerHTML = '';  // Clear the current list
+            try {
+                const playersList = document.getElementById('players-list');
+                playersList.innerHTML = '';  // Clear the current list
 
-            players.forEach(player => {
-                const playerDiv = document.createElement('div');
-                playerDiv.classList.add('col-sm-3', 'custom-card', 'rounded-3', 'bg-white', 'p-3', 'mx-1');
-                playerDiv.textContent = player === username ? player + ' (You)' : player;
-                playersList.appendChild(playerDiv);
-            });
+                players.forEach(player => {
+                    const playerDiv = document.createElement('div');
+                    playerDiv.classList.add('col-sm-3', 'custom-card', 'rounded-3', 'bg-white', 'p-3', 'mx-1');
+                    playerDiv.textContent = player === username ? player + ' (You)' : player;
+                    playersList.appendChild(playerDiv);
+                });
 
-            // Update the player count
-            playerCountDisplay.textContent = `${players.length} / 9`;
+                // Update the player count
+                playerCountDisplay.textContent = `${players.length} / 9`;
 
-            // Show or hide the "Start The Game" button based on the number of players
-            if (players.length === 9) {
-                startGameButton.style.display = 'block';
-            } else {
-                startGameButton.style.display = 'none';
+                // Show or hide the "Start The Game" button based on the number of players
+                if (players.length === 2) {
+                    startGameButton.style.display = 'block';
+                } else {
+                    startGameButton.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error updating player list:', error);
             }
         });
 
         function startGame() {
-            // Placeholder function for starting the game
-            alert('Starting the game!');
+            try {
+                socket.emit('startGame'); // Emit event to start the game
+            } catch (error) {
+                console.error('Error starting game:', error);
+            }
         }
 
         const toastTrigger = document.getElementById('copyToastBTN');
@@ -140,10 +155,19 @@
         if (toastTrigger) {
             const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
             toastTrigger.addEventListener('click', () => {
-                navigator.clipboard.writeText(roomCode);
-                toastBootstrap.show();
+                try {
+                    navigator.clipboard.writeText(roomCode);
+                    toastBootstrap.show();
+                } catch (error) {
+                    console.error('Error copying room code:', error);
+                }
             });
         }
+
+        startGameButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            startGame();
+        });
     </script>
 
 </body>

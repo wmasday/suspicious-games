@@ -63,8 +63,8 @@ const io = new Server(server);
 const db = mysql.createConnection({
     host: 'localhost',      // Database host
     user: 'root',           // Database username
-    password: '',   // Database password
-    database: 'suspicious_games'     // Database name
+    password: 'mamank546',   // Database password
+    database: 'suspicious_games' // Database name
 });
 
 // Connect to the database
@@ -129,33 +129,105 @@ app.post('/create_room', (req, res) => {
     });
 });
 
-// Socket.IO connection
 io.on('connection', (socket) => {
     console.log('A player connected:', socket.id);
 
     // Join a room
     socket.on('joinRoom', ({ username, roomCode }) => {
-        socket.join(roomCode);
-        console.log(`${username} joined room: ${roomCode}`);
+        try {
+            socket.join(roomCode);
+            console.log(`${username} joined room: ${roomCode}`);
 
-        // Add player's name to socket
-        socket.username = username;
+            // Add player's name to socket
+            socket.username = username;
 
-        // Broadcast the list of players in the room to everyone
-        const playersInRoom = getPlayersInRoom(roomCode);
-        io.to(roomCode).emit('playersListUpdate', playersInRoom);
+            // Broadcast the list of players in the room to everyone
+            const playersInRoom = getPlayersInRoom(roomCode);
+            io.to(roomCode).emit('playersListUpdate', playersInRoom);
+        } catch (error) {
+            console.error('Error joining room:', error);
+        }
+    });
+
+    // Start Game
+    socket.on('startGame', () => {
+        try {
+            const roomCode = [...socket.rooms][1]; // Get the room the player was in
+            const players = getPlayersInRoom(roomCode);
+            const assignedRoles = assignRoles(players);
+
+            // Send the roles to the players
+            players.forEach((player, index) => {
+                const playerSocket = [...io.sockets.sockets].find(([_, s]) => s.username === player)[1];
+                if (playerSocket) {
+                    playerSocket.emit('assignRole', assignedRoles[index]);
+                } else {
+                    console.error(`Player socket not found for: ${player}`);
+                }
+            });
+
+            // Redirect players to the announcement page after a slight delay
+            setTimeout(() => {
+                try {
+                    io.to(roomCode).emit('redirectToAnnouncement');
+                } catch (error) {
+                    console.error('Error starting game:', error);
+                }
+            }, 1000); // Optional: delay to ensure roles are displayed first
+        } catch (error) {
+            console.error('Error starting game:', error);
+        }
     });
 
     // Handle player disconnect
     socket.on('disconnect', () => {
         console.log('A player disconnected:', socket.id);
-        const roomCode = [...socket.rooms][1];  // Get the room the player was in
-        if (roomCode) {
-            const playersInRoom = getPlayersInRoom(roomCode);
-            io.to(roomCode).emit('playersListUpdate', playersInRoom);
+        try {
+            const roomCode = [...socket.rooms][1];  // Get the room the player was in
+            if (roomCode) {
+                const playersInRoom = getPlayersInRoom(roomCode);
+                io.to(roomCode).emit('playersListUpdate', playersInRoom);
+            }
+        } catch (error) {
+            console.error('Error during player disconnect:', error);
         }
     });
 });
+
+
+// Function to assign roles based on the number of players
+function assignRoles(players) {
+    const roles = [];
+    const numPlayers = players.length;
+
+    // Define role distribution based on player count
+    if (numPlayers >= 5 && numPlayers <= 7) {
+        roles.push("Mafia Politik"); // 1
+        roles.push("Jurnalis"); // 1
+        roles.push(...Array(numPlayers - 2).fill("Aktivis")); // Rest are Activists
+    } else if (numPlayers >= 8 && numPlayers <= 10) {
+        roles.push("Mafia Politik"); // 2 max
+        roles.push("Mafia Politik");
+        roles.push("Jurnalis"); // 1
+        roles.push("KPK"); // 1
+        roles.push("Kepolisian"); // 1
+        roles.push(...Array(numPlayers - 5).fill("Aktivis")); // Rest are Activists
+    } else if (numPlayers >= 11 && numPlayers <= 15) {
+        roles.push("Mafia Politik"); // 3 max
+        roles.push("Mafia Politik");
+        roles.push("Mafia Politik");
+        roles.push("Jurnalis"); // 1
+        roles.push("KPK"); // 1
+        roles.push("Kepolisian"); // 1
+        roles.push(...Array(numPlayers - 6).fill("Aktivis")); // Rest are Activists
+    }
+
+    // Shuffle the roles array to randomize assignment
+    roles.sort(() => Math.random() - 0.5);
+    console.log(roles)
+
+    return roles;
+}
 
 // Function to generate a random room code (example)
 function generateRoomCode() {

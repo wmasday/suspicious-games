@@ -22,7 +22,7 @@
 
 .homepage, .waiting_room {
     display: flex;
-    background: url(assets/home.png);
+    background: url(public/assets/home.png);
     background-size: cover;
     background-repeat: no-repeat;
     opacity: 95%;

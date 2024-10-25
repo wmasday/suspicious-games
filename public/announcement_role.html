@@ -18,21 +18,36 @@
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script>
+    <script type="text/javascript">  
         const socket = io();
 
-        // Get username from localStorage or URL
+        // Get username from localStorage
         const username = localStorage.getItem('username');
 
         // Listen for role assignment
         socket.on('assignRole', (role) => {
-            document.getElementById('player-role').textContent = role; // Display the role
+            try {
+                if (role) {
+                    document.getElementById('player-role').textContent = role; // Display the role
+                } else {
+                    throw new Error('Role is undefined');
+                }
+            } catch (error) {
+                console.error('Error displaying assigned role:', error);
+            }
         });
 
-        // Listen for redirect to announcement page
+        // Redirect to announcement page
         socket.on('redirectToAnnouncement', () => {
-            window.location.href = 'announcment_role.html'; // Redirect to announcement page
+            try {
+                window.location.href = 'announcement_role.html'; // Redirect to announcement page
+            } catch (error) {
+                console.error('Error during redirect:', error);
+            }
         });
+
+        // Emit join event again to confirm player is in the room when loading this page
+        socket.emit('joinRoom', { username, roomCode: localStorage.getItem('roomCode') });
     </script>
 </body>
 </html>
