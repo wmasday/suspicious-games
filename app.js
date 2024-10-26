@@ -208,25 +208,15 @@ io.on('connection', (socket) => {
 
     // Handle player disconnect
     socket.on('disconnect', () => {
-        const roomCode = socket.roomCode;
-        const username = socket.username;
-
-        if (roomCode && username) {
-            // Remove user from role_on_room in the database
-            const removeUserQuery = `
-                DELETE FROM role_on_room
-                WHERE room_id = (SELECT id FROM room WHERE room_code = ?) AND username = ?
-            `;
-            db.query(removeUserQuery, [roomCode, username], (err) => {
-                if (err) {
-                    console.error('Error removing user from role_on_room:', err);
-                    return;
-                }
-
-                // Emit updated player list to all clients in the room
+        console.log('A player disconnected:', socket.id);
+        try {
+            const roomCode = [...socket.rooms][1];  // Get the room the player was in
+            if (roomCode) {
                 const playersInRoom = getPlayersInRoom(roomCode);
                 io.to(roomCode).emit('playersListUpdate', playersInRoom);
-            });
+            }
+        } catch (error) {
+            console.error('Error during player disconnect:', error);
         }
     });
 });
