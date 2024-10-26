@@ -112,6 +112,7 @@ a{
 
 .header-modal button {
     border: none;
+    color: black;
     background: transparent;
     font-size: 25px;
 }
@@ -631,6 +632,111 @@ input:checked + .slider:before {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
 }
 
+/* Modal Styling */
+.modal-chat {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 100; /* Ensure it appears on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with transparency */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+.modal-dialog {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 70%; /* Adjust height if needed */
+}
+
+/* Header with Timer and Close Button */
+.header-modal-chat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.timer-chat {
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.timer-chat span {
+    font-size: 2.5rem;
+    color: black;
+}
+
+.header-modal-chat button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Chat Body */
+.chat-body {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Chat Bubbles */
+.bubble-chat {
+    background-color: #ebebeb;
+    padding: 10px 15px;
+    border-radius: 15px;
+    margin-bottom: 10px;
+    max-width: 75%;
+}
+
+.user-bubble {
+    background-color: #D2DAE5; /* Different color for user messages */
+    align-self: flex-end;
+}
+
+.bubble-chat p {
+    margin: 0;
+    color: black;
+    font-weight: 400;
+}
+
+/* Input Chat at the Bottom */
+.input-chat {
+    display: flex;
+    gap: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+}
+
+.input-chat input {
+    flex-grow: 1;
+    padding: 10px;
+    border-radius: 15px;
+    border: 1px solid #ccc;
+}
+
+.input-chat button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+
 .content-sidang {
     display: flex;
     flex-direction: column;
@@ -701,6 +807,7 @@ span {
     width: 400px;
     border-radius: 20px;
     padding: 15px 20px;
+    cursor: pointer;
 }
 
 .btn-vote button {
@@ -840,4 +947,87 @@ span {
     opacity: 95%;
     justify-content: center;
     align-items: center;
+}
+
+/* Vote Modal Styling */
+.modal-vote {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 100; /* Ensure it appears on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with transparency */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+.modal-dialog {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.header-modal-vote {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.vote-title {
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.header-modal-vote button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Player list with checkboxes */
+.vote-body {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.player-checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.player-checkbox input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.player-checkbox label {
+    font-size: 1.2rem;
+}
+
+/* Submit Vote Button */
+.vote-actions {
+    display: flex;
+    justify-content: center;
+}
+
+.vote-actions .submit-vote {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1rem;
 }

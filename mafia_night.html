@@ -34,7 +34,7 @@
                 </div>
                 <div class="action-player">
                     <div class="field-talk">
-                        <input type="text" placeholder="Let's Talk">
+                        <input type="text" id="chatInput" readonly placeholder="Let's Talk">
                     </div>
                     <div class="btn-vote">
                         <button>Vote <i class="ph ph-target"></i></button>
@@ -42,9 +42,122 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal-vote" id="voteModal">
+            <div class="modal-dialog">
+                <div class="header-modal-vote">
+                    <h3 class="vote-title">Vote for Mafia</h3>
+                    <button class="close-vote-modal">⨉</button>
+                </div>
+                <div class="vote-body">
+                    <!-- Player list with checkboxes for voting -->
+                    <form id="voteForm">
+                        <!-- Example of a player checkbox -->
+                        <div class="player-checkbox">
+                            <input type="checkbox" id="player1" name="vote" value="Budi">
+                            <label for="player1">Budi</label>
+                        </div>
+                        <!-- More players will be added dynamically -->
+                    </form>
+                </div>
+                <div class="vote-actions">
+                    <button class="submit-vote">Submit Vote</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal-chat" id="joinRoomModal">
+            <div class="modal-dialog">
+                <div class="header-modal-chat">
+                    <h3 class="timer-chat">
+                        Timer <span>60 s</span>
+                    </h3>
+                    <button class="close-modal">⨉</button>
+                </div>
+                <div class="chat-body">
+                    <!-- Bubble Chat Example -->
+                    <div class="bubble-chat">
+                        <p><strong>Budi:</strong> Hello, are you the mafia?</p>
+                    </div>
+                    <div class="bubble-chat user-bubble">
+                        <p><strong>You:</strong> Yes, I am!</p>
+                    </div>
+                </div>
+                <div class="input-chat">
+                    <input type="text" placeholder="Let's Talk" />
+                    <button>Send</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        // Get modal and elements
+        const chatInput = document.getElementById('chatInput');
+        const modalChat = document.getElementById('joinRoomModal');
+        const closeButton = document.querySelector('.close-modal');
+        const voteButton = document.querySelector('.btn-vote button');
+        const voteModal = document.getElementById('voteModal');
+        const closeVoteButton = document.querySelector('.close-vote-modal');
+        const voteForm = document.getElementById('voteForm');
+
+        // Function to open the vote modal
+        voteButton.addEventListener('click', () => {
+            // Dynamically populate the player list in the vote modal
+            voteForm.innerHTML = ''; // Clear existing list
+            players.forEach((player, index) => {
+                const playerDiv = document.createElement('div');
+                playerDiv.classList.add('player-checkbox');
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `player${index}`;
+                checkbox.name = 'vote';
+                checkbox.value = player.name;
+
+                const label = document.createElement('label');
+                label.htmlFor = `player${index}`;
+                label.textContent = player.name;
+
+                playerDiv.appendChild(checkbox);
+                playerDiv.appendChild(label);
+                voteForm.appendChild(playerDiv);
+            });
+
+            voteModal.style.display = 'flex'; // Show the modal as a flexbox
+        });
+
+        // Function to close the vote modal
+        closeVoteButton.addEventListener('click', () => {
+            voteModal.style.display = 'none';
+        });
+
+        // Close the modal if clicked outside the modal content
+        window.addEventListener('click', (e) => {
+            if (e.target === voteModal) {
+                voteModal.style.display = 'none';
+            }
+        });
+
+        // Function to open the modal
+        chatInput.addEventListener('click', () => {
+            modalChat.style.display = 'flex'; // Show the modal as a flexbox
+        });
+
+        // Function to close the modal
+        closeButton.addEventListener('click', () => {
+            modalChat.style.display = 'none';
+        });
+
+        // Close the modal if clicked outside the modal content
+        window.addEventListener('click', (e) => {
+            if (e.target === modalChat) {
+                modalChat.style.display = 'none';
+            }
+        });
+
+    </script>
     <script type="text/javascript">
         const players = [
             {
